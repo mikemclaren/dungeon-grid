@@ -1,6 +1,7 @@
 const path = require("path");
 
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
+const Store = require("electron-store");
 const isDev = require("electron-is-dev");
 
 // Conditionally include the dev tools installer to load React Dev Tools
@@ -19,8 +20,8 @@ if (require("electron-squirrel-startup")) {
 function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1200,
+    height: 800,
     webPreferences: {
       nodeIntegration: true
     }
@@ -72,3 +73,12 @@ app.on("activate", () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+const dataStore = new Store();
+
+if (!dataStore.has('entities')) {
+  dataStore.set('entities', JSON.stringify(require('./data/entities')));
+}
+
+ipcMain.on('getStoreData', (event, arg) => {
+  event.returnValue = dataStore.get(arg);
+});

@@ -5,6 +5,7 @@
   "homepage": "./",
   "private": true,
   "dependencies": {
+    "@blueprintjs/popover2": "^0.1.0",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.3",
     "@testing-library/user-event": "^12.6.2",
@@ -44,6 +45,8 @@
     ]
   },
   "devDependencies": {
+    "@blueprintjs/core": "^3.38.0",
+    "@blueprintjs/icons": "^3.24.0",
     "@electron-forge/cli": "^6.0.0-beta.54",
     "@electron-forge/maker-deb": "^6.0.0-beta.54",
     "@electron-forge/maker-rpm": "^6.0.0-beta.54",
@@ -52,6 +55,8 @@
     "concurrently": "^5.3.0",
     "electron": "^11.2.1",
     "electron-devtools-installer": "^3.1.1",
+    "electron-store": "^7.0.0",
+    "react-router-dom": "^5.2.0",
     "wait-on": "^5.2.1"
   },
   "config": {

@@ -1,0 +1,14 @@
+.SidebarWrapper {
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding: 1em;
+  z-index: 100;
+  background-color: #F5F8FA;
+  height: 100vh;
+  border-right: 1px solid #D8E1E8;
+}
+
+.SideBarNewButtonWrapper {
+  margin-top: 2em;
+}

@@ -1,0 +1,88 @@
+.GridWrapper {
+  overflow: scroll;
+  padding: 1em;
+}
+
+.GridWrapper.GridZoom0 {
+  font-size: 0.3rem;
+}
+
+.GridWrapper.GridZoom1 {
+  font-size: 0.45rem;
+}
+
+.GridWrapper.GridZoom2 {
+  font-size: 0.6rem;
+}
+
+.GridWrapper.GridZoom3 {
+  font-size: 0.75rem;
+}
+
+.GridWrapper.GridZoom4 {
+  font-size: 0.9rem;
+}
+
+.GridWrapper.GridZoom5 {
+  font-size: 1rem;
+}
+
+.GridRow {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.GridCell {
+  flex: 1;
+  position: relative;
+  min-width: 5em;
+  min-height: 5em;
+  max-width: 5em;
+  max-height: 5em;
+  width: 5em;
+  height: 5em;
+  border-bottom: 1px solid #bfccd6;
+  border-left: 1px solid #bfccd6;
+  padding: 0.2em;
+  box-sizing: border-box;
+  vertical-align: top;
+}
+
+.GridHeader.GridCell {
+  text-align: center;
+  border: 0;
+}
+
+.GridCell:hover {
+  cursor: pointer;
+  background-color: #ebf1f5;
+}
+
+.GridWrapper .GridHeader.GridCell > span {
+  top: 0.55em;
+  position: relative;
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.GridWrapper .GridHeader.GridCell:last-child,
+.GridHeaderRow .GridHeader.GridCell:first-child {
+  border: 0;
+}
+
+.GridHeaderRow .GridHeader.GridCell,
+.GridHeaderRow .GridHeader.GridCell:last-child {
+  border-bottom: 1px solid #bfccd6;
+}
+
+.GridCell:last-child {
+  border-right: 1px solid #bfccd6;
+}
+
+.GridCoord {
+  font-weight: bold;
+  color: #bfccd6;
+  position: absolute;
+  bottom: 0em;
+  right: 0.1em;
+}
