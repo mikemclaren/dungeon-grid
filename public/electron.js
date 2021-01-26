@@ -23,8 +23,8 @@ function createWindow() {
     width: 1200,
     height: 800,
     webPreferences: {
-      nodeIntegration: true
-    }
+      nodeIntegration: true,
+    },
   });
 
   // and load the index.html of the app.
@@ -49,8 +49,8 @@ app.whenReady().then(() => {
 
   if (isDev) {
     installExtension(REACT_DEVELOPER_TOOLS)
-      .then(name => console.log(`Added Extension:  ${name}`))
-      .catch(error => console.log(`An error occurred: , ${error}`));
+      .then((name) => console.log(`Added Extension:  ${name}`))
+      .catch((error) => console.log(`An error occurred: , ${error}`));
   }
 });
 
@@ -75,10 +75,43 @@ app.on("activate", () => {
 // code. You can also put them in separate files and require them here.
 const dataStore = new Store();
 
-if (!dataStore.has('entities')) {
-  dataStore.set('entities', JSON.stringify(require('./data/entities')));
+if (!dataStore.has("entities")) {
+  dataStore.set("entities", JSON.stringify(require("./data/entities")));
 }
 
-ipcMain.on('getStoreData', (event, arg) => {
+if (!dataStore.has("grids")) {
+  dataStore.set("grids", "");
+}
+
+ipcMain.on("getStoreData", (event, arg) => {
   event.returnValue = dataStore.get(arg);
+});
+
+ipcMain.on("saveGrid", (event, arg) => {
+  let grids = JSON.parse(dataStore.get("grids"));
+
+  let found = false;
+  for (let i = 0; i < grids.length; i++) {
+    if (grids[i].gridId === arg.gridId) {
+      grids[i] = arg;
+      found = true;
+      break;
+    }
+  }
+
+  if (!found) {
+    grids.push(arg);
+  }
+
+  dataStore.set("grids", JSON.stringify(grids));
+  event.returnValue = true;
+
+  const mainWindow = BrowserWindow.getAllWindows()[0];
+  mainWindow.webContents.send("update-grids", JSON.stringify(grids));
+});
+
+ipcMain.on("wipeData", (event, arg) => {
+  dataStore.set("entities", JSON.stringify(require("./data/entities")));
+  dataStore.set("grids", "");
+  event.returnValue = true;
 });

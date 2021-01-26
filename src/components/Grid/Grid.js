@@ -1,12 +1,28 @@
 import React from "react";
-import { Hotkey, Hotkeys, HotkeysTarget } from "@blueprintjs/core";
-import { useState } from "react";
+
 import { AlphabetFromNum } from "../../alphabet";
+import { fetchCellData } from "../../cells";
 import "./Grid.css";
 
-const GridCell = ({ x = 0, y = 0 }) => {
+const GridCell = ({
+  x = 0,
+  y = 0,
+  isObstacled = false,
+  onClick = () => {},
+  selected = false,
+}) => {
+  const handleClick = () => {
+    onClick(x, y);
+  };
+
   return (
-    <div className="GridCell" key={x}>
+    <div
+      className={`GridCell ${selected ? "GridCell--Selected" : ""}${
+        isObstacled ? " GridCell--Obstacled" : ""
+      }`}
+      key={x}
+      onClick={handleClick}
+    >
       <span className="GridCoord">
         {AlphabetFromNum(x)}
         {y}
@@ -15,65 +31,42 @@ const GridCell = ({ x = 0, y = 0 }) => {
   );
 };
 
-@HotkeysTarget
-class Grid extends React.Component {
-  state = {
-    zoom: 5,
-  };
-
-  zoomOut() {
-    this.setState((state) => {
-      if (state.zoom > 0) {
-        return {
-          zoom: state.zoom - 1,
-        };
-      }
-    });
-  }
-
-  zoomIn() {
-    this.setState((state) => {
-      if (state.zoom < 5) {
-        return {
-          zoom: state.zoom + 1,
-        };
-      }
-    });
-  }
-
-  renderHotkeys() {
-    return (
-      <Hotkeys>
-        <Hotkey label="Zoom out" combo="minus" onKeyDown={this.zoomIn} />
-        <Hotkey label="Zoom out" combo="plus" onKeyDown={this.zoomOut} />
-      </Hotkeys>
-    );
-  }
-
-  render() {
-    return (
-      <div className={`GridWrapper GridZoom${this.state.zoom}`}>
-        <div className="GridHeaderRow GridRow">
-          <div className="GridCell GridHeader" />
-          {[...Array(this.props.width).keys()].map((num) => (
-            <div className="GridCell GridHeader" key={num}>
-              <span>{AlphabetFromNum(num)}</span>
-            </div>
-          ))}
-        </div>
-        {[...Array(this.props.height).keys()].map((num) => (
-          <div key={num} className="GridRow">
-            <div className="GridCell GridHeader">
-              <span>{num}</span>
-            </div>
-            {[...Array(this.props.width).keys()].map((w) => (
-              <GridCell x={w} y={num} />
-            ))}
+const Grid = ({
+  width = 0,
+  height = 0,
+  zoom = 5,
+  onCellClick = () => {},
+  selectedCell = {},
+  gridInfo = {},
+}) => {
+  return (
+    <div className={`GridWrapper GridZoom${zoom}`}>
+      <div className="GridHeaderRow GridRow">
+        <div className="GridCell GridHeader" />
+        {[...Array(width).keys()].map((num) => (
+          <div className="GridCell GridHeader" key={num}>
+            <span>{AlphabetFromNum(num)}</span>
           </div>
         ))}
       </div>
-    );
-  }
-}
+      {[...Array(height).keys()].map((num) => (
+        <div key={num} className="GridRow">
+          <div className="GridCell GridHeader">
+            <span>{num}</span>
+          </div>
+          {[...Array(width).keys()].map((w) => (
+            <GridCell
+              x={w}
+              y={num}
+              onClick={onCellClick}
+              selected={selectedCell.x === w && selectedCell.y === num}
+              {...fetchCellData(gridInfo, w, num)}
+            />
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+};
 
 export default Grid;
