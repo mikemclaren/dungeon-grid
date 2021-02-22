@@ -1,0 +1,45 @@
+.FormWrapper {
+  max-width: 25em;
+}
+
+.SelectDropdown--EntityType {
+  width: 7em;
+}
+
+.SelectDropdown--EntityMonster {
+  width: 18em;
+}
+
+.EntityGridCell {
+  position: relative;
+  min-width: 5em;
+  min-height: 5em;
+  max-width: 5em;
+  max-height: 5em;
+  width: 5em;
+  height: 5em;
+  border: 1px solid #bfccd6;
+  padding: 0.2em;
+  box-sizing: border-box;
+  vertical-align: top;  
+  text-align: center;
+}
+
+.EntityGridCell.EntityGridCell--Player {
+  color: #A82255;
+}
+
+.EntityGridCell.EntityGridCell--Enemy {
+  color: #5C255C;
+}
+
+.EntityGridCell.EntityGridCell--NPC {
+  color: #1F4B99;
+}
+
+.EntityGridCell > span {
+  top: 0.45em;
+  position: relative;
+  font-size: 2em;
+  font-weight: bold;
+}

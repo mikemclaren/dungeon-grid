@@ -1,0 +1,21 @@
+.GridScreenGridFormWrapper {
+  position: fixed;
+  left: 4em;
+  top: 0;
+  height: 100vh;
+  background-color: #FFF;
+  z-index: 5;
+  padding: 2em;
+  width: 19.5em;
+
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 5%), 0 4px 24px 2px rgb(0 0 0 / 10%);
+}
+
+.GridScreen__SaveButton {
+  margin-bottom: 1em;
+}
+
+.GridScreen__Grid {
+  margin-left: 15rem;
+  width: calc(100% - 15rem);
+}

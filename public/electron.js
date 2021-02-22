@@ -3,6 +3,7 @@ const path = require("path");
 const { app, BrowserWindow, ipcMain } = require("electron");
 const Store = require("electron-store");
 const isDev = require("electron-is-dev");
+const got = require('got');
 
 // Conditionally include the dev tools installer to load React Dev Tools
 let installExtension, REACT_DEVELOPER_TOOLS;
@@ -76,7 +77,7 @@ app.on("activate", () => {
 const dataStore = new Store();
 
 if (!dataStore.has("entities")) {
-  dataStore.set("entities", JSON.stringify(require("./data/entities")));
+  dataStore.set("entities", "");
 }
 
 if (!dataStore.has("grids")) {
@@ -88,7 +89,8 @@ ipcMain.on("getStoreData", (event, arg) => {
 });
 
 ipcMain.on("saveGrid", (event, arg) => {
-  let grids = JSON.parse(dataStore.get("grids"));
+  let grids = dataStore.get("grids");
+  grids = grids === "" ? [] : JSON.parse(grids);
 
   let found = false;
   for (let i = 0; i < grids.length; i++) {
@@ -110,8 +112,76 @@ ipcMain.on("saveGrid", (event, arg) => {
   mainWindow.webContents.send("update-grids", JSON.stringify(grids));
 });
 
+ipcMain.on("saveEntity", (event, arg) => {
+  let entities = dataStore.get("entities");
+  entities = entities === "" ? [] : JSON.parse(entities);
+
+  let found = false;
+  for (let i = 0; i < entities.length; i++) {
+    if (entities[i].entityId === arg.entityId) {
+      entities[i] = arg;
+      found = true;
+      break;
+    }
+  }
+
+  if (!found) {
+    entities.push(arg);
+  }
+
+  dataStore.set("entities", JSON.stringify(entities));
+  event.returnValue = true;
+
+  const mainWindow = BrowserWindow.getAllWindows()[0];
+  mainWindow.webContents.send("update-entities", JSON.stringify(entities));
+});
+
 ipcMain.on("wipeData", (event, arg) => {
-  dataStore.set("entities", JSON.stringify(require("./data/entities")));
+  dataStore.reset();
+
+  dataStore.set("entities", "");
   dataStore.set("grids", "");
   event.returnValue = true;
+});
+
+ipcMain.handle("fetchFromCache", async (event, type, index) => {
+  if (!dataStore.has(`${type}:${index}`)) {
+    try {
+      const { body } = await got(`https://www.dnd5eapi.co/api/${type}/${index}`);
+      dataStore.set(`${type}:${index}`, body);
+
+      return body;
+    } catch (ex) {
+      console.error(ex);
+      return JSON.stringify({
+        error: 'Error fetching from API.'
+      });
+    }
+  }
+
+  return dataStore.get(`${type}:${index}`);
+});
+
+ipcMain.handle("saveGrid", async (event, gridInfo) => {
+  let grids = dataStore.get("grids");
+  grids = grids === "" ? [] : JSON.parse(grids);
+
+  let found = false;
+  for (let i = 0; i < grids.length; i++) {
+    if (grids[i].gridId === gridInfo.gridId) {
+      grids[i] = gridInfo;
+      found = true;
+      break;
+    }
+  }
+
+  if (!found) {
+    grids.push(gridInfo);
+  }
+
+  dataStore.set("grids", JSON.stringify(grids));
+  event.returnValue = true;
+
+  const mainWindow = BrowserWindow.getAllWindows()[0];
+  mainWindow.webContents.send("update-grids", JSON.stringify(grids));
 });

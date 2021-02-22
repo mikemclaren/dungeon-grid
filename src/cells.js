@@ -1,50 +1,59 @@
 export const CELL_INFO_KEY = "cells";
 
-export const updateCell = (
-  gridInfo = {},
-  x,
-  y,
-  fn = (d) => {
-    return d;
-  }
-) => {
-  const newGridInfo = Object.assign({}, gridInfo);
+export const updateCell = (gridInfo = {}, x, y, fn = (d) => d) => {
+  let newGridInfo = { ...gridInfo };
+
   if (!newGridInfo[CELL_INFO_KEY]) {
-    newGridInfo[CELL_INFO_KEY] = [];
+    newGridInfo[CELL_INFO_KEY] = {};
   }
 
-  const cells = newGridInfo[CELL_INFO_KEY];
-
-  if (!cells[x]) {
-    cells[x] = [];
-  }
-
-  if (!cells[x][y]) {
-    cells[x][y] = {
+  let cells = { ...newGridInfo[CELL_INFO_KEY] };
+  const key = `${x}:${y}`;
+  if (!cells[key]) {
+    cells[key] = {
       x,
       y,
     };
   }
 
-  cells[x][y] = fn(cells[x][y]);
-  newGridInfo.cells = [].concat(cells);
+  cells[key] = fn(cells[key]);
 
+  newGridInfo[CELL_INFO_KEY] = cells;
   return newGridInfo;
 };
 
 export const fetchCellData = (gridInfo = {}, x, y) => {
-  if (
-    !gridInfo[CELL_INFO_KEY] ||
-    !gridInfo[CELL_INFO_KEY][x] ||
-    !gridInfo[CELL_INFO_KEY][x][y]
-  ) {
+  const key = `${x}:${y}`;
+
+  if (!gridInfo[CELL_INFO_KEY][key]) {
     return {
       x,
       y,
     };
   }
 
-  //console.log(gridInfo[CELL_INFO_KEY]);
+  return gridInfo[CELL_INFO_KEY][key];
+};
 
-  return gridInfo[CELL_INFO_KEY][x][y];
+export const cutAndPasteCell = (gridInfo = {}, fromX, fromY, toX, toY) => {
+  const fromCell = fetchCellData(gridInfo, fromX, fromY);
+
+  const info = {
+    ...updateCell(gridInfo, toX, toY, () => {
+      return {
+        ...fromCell,
+        x: toX,
+        y: toY,
+      };
+    }),
+  };
+
+  return {
+    ...updateCell(info, fromX, fromY, () => {
+      return {
+        x: fromX,
+        y: fromY,
+      }
+    })
+  };
 };

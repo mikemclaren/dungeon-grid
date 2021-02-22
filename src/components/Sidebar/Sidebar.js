@@ -1,6 +1,7 @@
 import {
   Button,
   Classes,
+  Icon,
   Intent,
   Menu,
   MenuItem,
@@ -10,10 +11,12 @@ import {
 import { IconNames } from "@blueprintjs/icons";
 import { Popover2 } from "@blueprintjs/popover2";
 import { useEffect, useState } from "react";
-import { Redirect } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { EntityTypes } from "../../entities";
 
 import "./Sidebar.css";
+
+const { ipcRenderer } = window.require("electron");
 
 const NewMenu = ({ closeDrawer = () => {} }) => {
   const [route, setRoute] = useState(null);
@@ -29,9 +32,13 @@ const NewMenu = ({ closeDrawer = () => {} }) => {
       <MenuItem
         icon={IconNames.NEW_GRID_ITEM}
         text="New Grid"
-        onClick={handleMenuClick("/grid/new")}
+        onClick={handleMenuClick("/grid")}
       />
-      <MenuItem icon={IconNames.NEW_PERSON} text="New Entity" />
+      <MenuItem
+        icon={IconNames.NEW_PERSON}
+        text="New Entity"
+        onClick={handleMenuClick("/entity")}
+      />
     </Menu>
   );
 };
@@ -39,6 +46,7 @@ const NewMenu = ({ closeDrawer = () => {} }) => {
 const Sidebar = ({ closeDrawer = () => {}, entities = [], grids = [] }) => {
   const [treeContents, setTreeContents] = useState([]);
   const [redirectToGrid, setRedirectToGrid] = useState(null);
+  const [redirectToEntity, setRedirectToEntity] = useState(null);
 
   useEffect(() => {
     const tree = [
@@ -62,8 +70,8 @@ const Sidebar = ({ closeDrawer = () => {}, entities = [], grids = [] }) => {
         hasCaret: true,
         label: "Entities",
         childNodes: entities.map((entity, i) => ({
-          id: `${entity.name}${i}`,
-          key: `${entity.name}${i}`,
+          id: entity.entityId,
+          key: entity.entityId,
           label: entity.name,
           icon:
             entity.type === EntityTypes.PLAYER
@@ -81,6 +89,9 @@ const Sidebar = ({ closeDrawer = () => {}, entities = [], grids = [] }) => {
     if (!nodeData.childNodes) {
       if (nodeData.icon === IconNames.MAP) {
         setRedirectToGrid(nodeData.id);
+        closeDrawer();
+      } else {
+        setRedirectToEntity(nodeData.id);
         closeDrawer();
       }
     }
@@ -117,10 +128,16 @@ const Sidebar = ({ closeDrawer = () => {}, entities = [], grids = [] }) => {
     return nodes;
   };
 
+  const deleteData = () => {
+    return ipcRenderer.sendSync("wipeData");
+  };
+
   return (
     <div>
       {redirectToGrid && <Redirect to={`/grid/${redirectToGrid}`} />}
+      {redirectToEntity && <Redirect to={`/entity/${redirectToEntity}`} />}
 
+      <h2>Create / Edit</h2>
       <Tree
         className={`${Classes.ELEVATION_0}`}
         contents={treeContents}
@@ -145,6 +162,12 @@ const Sidebar = ({ closeDrawer = () => {}, entities = [], grids = [] }) => {
             Create New Things
           </Button>
         </Popover2>
+      </div>
+
+      <div className="SideBarNewButtonWrapper">
+        <Button intent={Intent.WARNING} onClick={deleteData}>
+          Delete all Data
+        </Button>
       </div>
     </div>
   );

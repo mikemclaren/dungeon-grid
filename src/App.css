@@ -3,8 +3,12 @@
 @import "~@blueprintjs/icons/lib/css/blueprint-icons.css";
 @import "~@blueprintjs/popover2/lib/css/blueprint-popover2.css";
 
+.App h1 {
+  margin-top: 0;
+}
+
 .App {
-  padding: 1em;
+  padding: 0;
 }
 
 .Row {
@@ -27,4 +31,37 @@
 
 .Col2:last-child {
   margin-right: 0;
+}
+
+.Col3 {
+  flex: 3;
+  margin-right: 1em;
+}
+
+.Col3:last-child {
+  margin-right: 0;
+}
+
+.AppSideMenu {
+  padding: 1em;
+  height: 100vh;
+  vertical-align: top;
+  border-right: 1px solid #A7B6C2;
+  background-color: #E1E8ED;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 10;
+}
+
+.RouteContents {
+  min-width: calc(100vh - 3em);
+  margin-left: 5em;
+  padding: 1em;
+}
+
+.AppSideMenu__Heart {
+  position: absolute;
+  bottom: 1em;
+  left: 1.5em;
 }
