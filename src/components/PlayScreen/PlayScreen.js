@@ -72,7 +72,7 @@ const PlayScreen = ({
             if (destination.x !== selectedCell.x || destination.y !== selectedCell.y) {
               if (destination?.isObstacled || destination?.monster?.name || destination?.entity?.name) {
                 return info;
-              }  
+              }
             }
           }
         }
@@ -161,45 +161,7 @@ const PlayScreen = ({
       setLastMove(gridInfo);
 
       if (selectedCell.entity?.name || selectedCell.monster?.name) {
-        const destination = fetchCellData(gridInfo, x, y);
-
-        // can't move to a cell already occupied
-        if (destination.isObstacled || destination.entity?.name || destination.monster?.name) {
-          setSelectedCell({
-            ...destination,
-            actuallyExists: true
-          });
-          return;
-        }
-
-        // we move the entity or monster to the space
-        // we do this by updating the destination with the selectedCell
-        // info, wipe the selectedCell's spot, and then changing the
-        // selectedCell to the new cell.
-        setGridInfo((info) => {
-          let i = Object.assign(
-            {},
-            updateCell(info, x, y, (d) => {
-              return {
-                ...selectedCell,
-                x, y
-              };
-            }),
-          );
-
-          i = Object.assign({}, updateCell(i, selectedCell.x, selectedCell.y, (d) => {
-            return {
-              x: selectedCell.x, y: selectedCell.y
-            };
-          }));
-
-          setSelectedCell({
-            ...fetchCellData(i, x, y),
-            actuallyExists: true,
-          });
-
-          return i;
-        });
+        moveSelectedCell(x - selectedCell.x, y - selectedCell.y);
 
         return;
       }
