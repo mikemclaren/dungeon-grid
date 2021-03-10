@@ -1,0 +1,10 @@
+.Encyclopedia {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 20em;
+  border-left: 1px solid #D8E1E8;
+  height: 100vh;
+  background-color: #FFF;
+  padding: 1em;
+}

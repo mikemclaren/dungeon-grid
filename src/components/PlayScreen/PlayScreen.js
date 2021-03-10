@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { cutAndPasteCell, fetchCellData, updateCell } from "../../cells";
 import { EntitySizes } from "../../entities";
 import useZoom from "../../hooks/useZoom";
+import Encyclopedia from "../Encyclopedia";
 import Grid from "../Grid/Grid";
 
 import "./PlayScreen.css";

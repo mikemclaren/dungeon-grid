@@ -1,5 +1,6 @@
 {
   "name": "dungeon-grid",
+  "productName": "Dungeon",
   "version": "0.1.0",
   "main": "public/electron.js",
   "homepage": "./",
@@ -26,7 +27,8 @@
     "dev": "concurrently -k \"BROWSER=none npm start\" \"npm:electron\"",
     "electron": "wait-on tcp:3000 && electron-forge start",
     "package": "electron-forge package",
-    "make": "react-scripts build && electron-forge make"
+    "make": "react-scripts build && electron-forge make",
+    "make-mac": "npx @electron-forge/cli make --platform darwin",
   },
   "eslintConfig": {
     "extends": [
